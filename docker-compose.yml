@@ -1,0 +1,34 @@
+services:
+  premieres-service:
+    build:
+      context: ./premieres-service
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://mongo:27017/premieres
+      ENABLE_SEED_ENDPOINT: "true"
+      RATE_LIMIT_WINDOW_MS: 60000
+      RATE_LIMIT_MAX_REQUESTS: 100
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

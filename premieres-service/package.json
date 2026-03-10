@@ -1,0 +1,40 @@
+{
+    "name": "premieres-service",
+    "version": "1.0.0",
+    "description": "Microservicio de estrenos (premieres) para cadena de cines",
+    "type": "module",
+    "main": "dist/server.js",
+    "scripts": {
+        "dev": "tsx watch src/server.ts",
+        "build": "tsc",
+        "start": "node dist/server.js"
+    },
+    "keywords": [
+        "premieres",
+        "cine",
+        "microservice",
+        "express",
+        "mongodb"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "express-rate-limit": "^7.5.0",
+        "mongoose": "^8.9.5",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1",
+        "winston": "^3.17.0"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.0",
+        "@types/node": "^22.10.5",
+        "@types/swagger-jsdoc": "^6.0.4",
+        "@types/swagger-ui-express": "^4.1.7",
+        "tsx": "^4.19.2",
+        "typescript": "^5.7.3"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
