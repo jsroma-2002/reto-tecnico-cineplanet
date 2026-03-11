@@ -5,6 +5,7 @@ import { swaggerSpec } from "./config/swagger.js";
 import { rateLimiter } from "./middlewares/rateLimiter.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import premiereRoutes from "./routes/premiere.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(rateLimiter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(premiereRoutes);
+app.use(paymentRoutes);
 
 app.use(errorHandler);
 
