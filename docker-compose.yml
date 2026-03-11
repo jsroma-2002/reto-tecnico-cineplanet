@@ -1,12 +1,33 @@
 services:
+  # ──────────────── Frontend ────────────────
+  cinema-frontend:
+    build:
+      context: ./webapp-cineplanet
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3001
+        VITE_CANDYSTORE_API_URL: http://localhost:8081
+        VITE_COMPLETE_API_URL: http://localhost:8082
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+    ports:
+      - "3000:80"
+    depends_on:
+      - premieres-service
+      - candystore-service
+      - complete-service
+    networks:
+      - cinema-network
+    restart: unless-stopped
+
+  # ──────────────── Microservicios ────────────────
   premieres-service:
     build:
       context: ./premieres-service
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
-      PORT: 3000
+      PORT: 3001
       MONGO_URI: mongodb://mongo:27017/premieres
       ENABLE_SEED_ENDPOINT: "true"
       RATE_LIMIT_WINDOW_MS: 60000
@@ -14,6 +35,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+    networks:
+      - cinema-network
     restart: unless-stopped
 
   candystore-service:
@@ -31,6 +54,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - cinema-network
     restart: unless-stopped
 
   complete-service:
@@ -47,8 +72,11 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - cinema-network
     restart: unless-stopped
 
+  # ──────────────── Bases de datos ────────────────
   mongo:
     image: mongo:7
     ports:
@@ -61,6 +89,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    networks:
+      - cinema-network
     restart: unless-stopped
 
   mysql:
@@ -80,7 +110,13 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    networks:
+      - cinema-network
     restart: unless-stopped
+
+networks:
+  cinema-network:
+    driver: bridge
 
 volumes:
   mongo-data:
