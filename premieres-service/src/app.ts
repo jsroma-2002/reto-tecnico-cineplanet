@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 import { rateLimiter } from "./middlewares/rateLimiter.js";
@@ -7,6 +8,17 @@ import premiereRoutes from "./routes/premiere.routes.js";
 
 const app = express();
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  }),
+);
 app.use(express.json());
 app.use(rateLimiter);
 
